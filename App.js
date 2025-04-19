@@ -1,12 +1,22 @@
+// App.js
 import { StatusBar } from 'expo-status-bar';
 import React, { useState, useEffect } from 'react';
 import { StyleSheet, Text, View, SafeAreaView, FlatList, TouchableOpacity } from 'react-native';
-import { registerForPushNotificationsAsync } from './useNotifications';
+import UnsubscribeButton from './components/UnsubscribeButton';
+import * as Notifications from 'expo-notifications';
 
-// Fetch headlines from your Flask API
+Notifications.setNotificationHandler({
+  handleNotification: async () => ({
+    shouldShowAlert: true,
+    shouldPlaySound: false,
+    shouldSetBadge: false,
+  }),
+});
+
+// Fetch headlines from Flask API
 const fetchHeadlines = async () => {
   try {
-    const response = await fetch("http://192.168.0.103:5001/api/news"); 
+    const response = await fetch("http://192.168.0.103:5001/api/news");
     const data = await response.json();
     return data;
   } catch (error) {
@@ -18,17 +28,41 @@ const fetchHeadlines = async () => {
 export default function App() {
   const [headlines, setHeadlines] = useState([]);
 
-  // 🔔 Subscribe handler
+  // Subscribe handler
   const handleSubscribe = async () => {
-    const token = await registerForPushNotificationsAsync();
-
-    if (token) {
-      alert("You're subscribed! 🎉");
-      // Optionally send this token to your backend
+    const { status: existingStatus } = await Notifications.getPermissionsAsync();
+    let finalStatus = existingStatus;
+  
+    if (existingStatus !== 'granted') {
+      const { status } = await Notifications.requestPermissionsAsync();
+      finalStatus = status;
+    }
+  
+    if (finalStatus !== 'granted') {
+      alert('Notification permission denied 😢');
+      return;
+    }
+  
+    const tokenData = await Notifications.getExpoPushTokenAsync();
+    const token = tokenData.data;
+  
+    alert("📲 Your Expo Push Token:\n\n" + token);
+    console.log("Expo Push Token:", token);
+  
+    try {
+      await fetch("http://192.168.0.103:5001/register_token", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ token }),
+      });
+      console.log("✅ Token sent to backend");
+    } catch (err) {
+      console.error("❌ Failed to register token:", err);
     }
   };
+  
 
-  // Load data on mount
+  // Load headlines on mount
   useEffect(() => {
     const loadHeadlines = async () => {
       const data = await fetchHeadlines();
@@ -55,6 +89,9 @@ export default function App() {
           </View>
         )}
       />
+
+      {/* 🧹 Add Unsubscribe Button Below the Feed */}
+      <UnsubscribeButton />
 
       <StatusBar style="auto" />
     </SafeAreaView>

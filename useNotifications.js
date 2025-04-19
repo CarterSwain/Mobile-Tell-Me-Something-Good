@@ -19,7 +19,7 @@ export const registerForPushNotificationsAsync = async () => {
   }
 
   token = (await Notifications.getExpoPushTokenAsync()).data;
-  console.log("Expo Push Token:", token);
+  console.log("Expo Push Token:", token);  // ✅ Logs to terminal
 
   return token;
 };
