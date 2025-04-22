@@ -18,35 +18,37 @@ const UnsubscribeButton = () => {
       const result = await response.json();
 
       if (response.ok) {
-        Alert.alert("✅ Unsubscribed", "You will no longer receive notifications.");
+        Alert.alert("Unsubscribed", "You will no longer receive notifications.");
       } else {
-        Alert.alert("⚠️ Unsubscribe Failed", result.error || result.message);
+        Alert.alert("Unsubscribe Failed", result.error || result.message);
       }
     } catch (err) {
       console.error("Unsubscribe error:", err);
-      Alert.alert("❌ Error", "Something went wrong while unsubscribing.");
+      Alert.alert("Error", "Something went wrong while unsubscribing.");
     }
   };
 
   return (
     <TouchableOpacity style={styles.button} onPress={handleUnsubscribe}>
-      <Text style={styles.buttonText}>🚫 Unsubscribe from Notifications</Text>
+      <Text style={styles.buttonText}>Unsubscribe</Text>
     </TouchableOpacity>
   );
 };
 
 const styles = StyleSheet.create({
   button: {
-    backgroundColor: '#dc2626',
-    padding: 12,
+    backgroundColor: '#f3f4f6',
+    paddingVertical: 10,
     borderRadius: 8,
-    marginBottom: 20,
+    marginTop: 16,
     alignItems: 'center',
+    borderWidth: 1,
+    borderColor: '#d1d5db',
   },
   buttonText: {
-    color: '#fff',
-    fontWeight: '600',
-    fontSize: 16,
+    color: '#374151',
+    fontSize: 15,
+    fontFamily: 'Poppins_400Regular',
   },
 });
 

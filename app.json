@@ -37,6 +37,9 @@
         "projectId": "e412b579-35a5-437d-83b7-515e24ebb361"
       }
     },
-    "owner": "carter_swain"
+    "owner": "carter_swain",
+    "plugins": [
+      "expo-font"
+    ]
   }
 }
