@@ -12,6 +12,7 @@
   "dependencies": {
     "@expo-google-fonts/chewy": "^0.3.0",
     "@expo-google-fonts/poppins": "^0.3.0",
+    "dotenv": "^16.5.0",
     "expo": "~52.0.46",
     "expo-font": "~13.0.4",
     "expo-notifications": "~0.29.14",

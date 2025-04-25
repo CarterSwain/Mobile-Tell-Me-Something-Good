@@ -21,6 +21,10 @@ import { Poppins_400Regular, Poppins_600SemiBold } from '@expo-google-fonts/popp
 import { Chewy_400Regular } from '@expo-google-fonts/chewy';
 import styles from './styles';
 
+
+const BASE_URL = process.env.EXPO_PUBLIC_API_URL;
+
+
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
     shouldShowAlert: true,
@@ -30,11 +34,12 @@ Notifications.setNotificationHandler({
 });
 
 const fetchHeadlines = async () => {
-  const response = await fetch("http://192.168.0.103:5001/api/news");
+  const response = await fetch(`${BASE_URL}/api/news`);
   if (!response.ok) throw new Error("Network error");
   const data = await response.json();
   return data;
 };
+
 
 export default function App() {
   const [headlines, setHeadlines] = useState([]);
@@ -68,11 +73,11 @@ export default function App() {
     const tokenData = await Notifications.getExpoPushTokenAsync();
     const token = tokenData.data;
 
-    alert("📲 Your Expo Push Token:\n\n" + token);
+    alert("Subscribed!\nPositive news coming your way! 😊");
     console.log("Expo Push Token:", token);
 
     try {
-      await fetch("http://192.168.0.103:5001/register_token", {
+      await fetch(`${BASE_URL}/register_token`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ token }),
